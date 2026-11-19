@@ -6,4 +6,5 @@ threads_count = Integer(ENV.fetch("PUMA_THREADS", 5))
 threads threads_count, threads_count
 workers Integer(ENV.fetch("WEB_CONCURRENCY", 0))
 port Integer(ENV.fetch("PORT", 3000))
+environment ENV.fetch("RACK_ENV", "production")
 preload_app!
