@@ -62,6 +62,10 @@ class AppTest < Minitest::Test
     post "/post_searches", sig: DANBOORU_SIGNATURES["nonexistent_tag,abc123"]
     assert_equal 422, last_response.status
 
+    post "/post_searches", sig: Reportbooru::MessageVerifier.new("testkey").generate("ps- ,abc123")
+    assert_equal 422, last_response.status
+    assert_empty redis.keys("ps-day-*")
+
     get "/post_searches/rank", date: "garbage"
     assert_equal 400, last_response.status
 

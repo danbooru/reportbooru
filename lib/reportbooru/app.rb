@@ -57,9 +57,10 @@ module Reportbooru
         return empty(422) unless request.params["sig"]
 
         key, session_id = verify(request.params["sig"])
-        return empty(422) unless key.start_with?("ps-")
+        tags = key.delete_prefix("ps-")
+        return empty(422) if tags == key || tags.strip.empty?
 
-        @search_counter.count!(key.delete_prefix("ps-"), session_id)
+        @search_counter.count!(tags, session_id)
         empty(200)
 
       in ["POST", "/missed_searches"]
