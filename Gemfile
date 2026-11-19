@@ -1,12 +1,14 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-gem 'dotenv-rails', :require => "dotenv/rails-now"
-gem 'rails', '~> 4.2.0'
-gem 'whenever'
-gem 'redis'
-gem 'aws-sdk', '~> 2'
-gem 'memoist'
+ruby "~> 4.0.10"
 
-group :production do
-  gem 'unicorn', :platforms => :ruby
+gem "aws-sdk-dynamodb", "~> 1.187"
+gem "puma", "~> 8.1"
+gem "rack", "~> 3.2"
+gem "redis", "~> 6.0"
+
+group :development, :test do
+  gem "minitest", "~> 6.1"
+  gem "rack-test", "~> 2.3"
+  gem "rake"
 end

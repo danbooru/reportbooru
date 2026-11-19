@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Trims yesterday's post search ranking down to the top searches. Run once a day.
+
+require "bundler/setup"
+require_relative "../lib/reportbooru"
+
+Reportbooru::SearchCounter.new(redis: Reportbooru.redis).prune!

@@ -1,2 +1,2 @@
 redis: redis-server
-web: bundle exec unicorn -p 3001
+web: bundle exec puma -C config/puma.rb
