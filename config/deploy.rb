@@ -14,5 +14,3 @@ set :default_env, {
 }
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'public/exports', 'public/user-reports', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle')
 set :linked_files, fetch(:linked_files, []).push(".env")
-
-Rake::Task["deploy:migrate"].clear_actions

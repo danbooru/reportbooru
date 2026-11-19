@@ -1,3 +1,0 @@
-#!/bin/bash
-
-find /home/danbooru/pg_backups -name 'db-*.dump' -mtime +1 -exec /bin/rm -f {} \;
