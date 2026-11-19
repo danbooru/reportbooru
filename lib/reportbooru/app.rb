@@ -21,6 +21,7 @@ module Reportbooru
   #   POST /post_views         msg=<signed "<post id>,<session id>">
   #   GET  /post_searches/rank?date=YYYY-MM-DD   JSON [[tags, count], ...]
   #   GET  /post_views/rank?date=YYYY-MM-DD      JSON [[post id, count], ...] or null
+  #   GET  /post_views/<post id>                 text all-time view count (used by userscripts)
   #   GET  /missed_searches                      text "<tags> <count>" lines, last 7 days
   #   GET  /up                                   health check
   class App
@@ -80,6 +81,9 @@ module Reportbooru
 
       in ["GET", "/post_views/rank"]
         json(view_counter.rank(date_param(request).to_s))
+
+      in ["GET", %r{\A/post_views/\d+\z}]
+        text(200, view_counter.count(request.path_info.delete_prefix("/post_views/").to_i).to_s)
 
       in ["GET", "/missed_searches"]
         text(200, @missed_search_counter.rank.map { |tags, count| "#{tags} #{count}" }.join("\n"))

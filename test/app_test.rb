@@ -136,6 +136,47 @@ class AppTest < Minitest::Test
     assert_equal "null", last_response.body
   end
 
+  def test_post_view_count_from_redis
+    redis.setex("vc-12345", 60, 42)
+
+    get "/post_views/12345"
+    assert_equal 200, last_response.status
+    assert_equal "42", last_response.body
+    assert_equal "*", last_response.headers["access-control-allow-origin"]
+    assert_empty dynamodb.api_requests
+  end
+
+  def test_post_view_count_from_dynamodb
+    dynamodb.stub_responses(:get_item, { item: { "post_id" => 12345, "count" => 41 } })
+
+    get "/post_views/12345"
+    assert_equal "41", last_response.body
+    assert_equal "41", redis.get("vc-12345")
+
+    # Reading the count doesn't change it. The next view adds one.
+    get "/post_views/12345"
+    assert_equal "41", last_response.body
+
+    post "/post_views", msg: DANBOORU_SIGNATURES["12345,abc123"]
+    get "/post_views/12345"
+    assert_equal "42", last_response.body
+  end
+
+  def test_post_view_count_for_a_post_with_no_views
+    dynamodb.stub_responses(:get_item, { item: nil })
+
+    get "/post_views/999"
+    assert_equal "0", last_response.body
+  end
+
+  def test_post_view_count_rejects_non_numeric_ids
+    get "/post_views/abc"
+    assert_equal 404, last_response.status
+
+    get "/post_views/12abc"
+    assert_equal 404, last_response.status
+  end
+
   def test_post_views_rejects_bad_requests
     post "/post_views"
     assert_equal 422, last_response.status

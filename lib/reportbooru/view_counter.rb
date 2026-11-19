@@ -41,6 +41,17 @@ module Reportbooru
       end
     end
 
+    # @return [Integer] the number of sessions that have ever viewed the post
+    def count(post_id)
+      cached = redis.get("vc-#{post_id}")
+      return cached.to_i if cached
+
+      resp = dynamodb.get_item(table_name: POST_VIEWS_TABLE, key: { "post_id" => post_id })
+      val = resp.item ? resp.item["count"].to_i : 0
+      redis.setex("vc-#{post_id}", DAY, val)
+      val
+    end
+
     # @param date [String] the date (YYYY-MM-DD)
     # @return [Array<Array<(String, Float)>>, nil] the most viewed posts that day and their view counts
     def rank(date, limit = LIMIT)
