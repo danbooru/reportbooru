@@ -1,13 +1,6 @@
-Reportbooru is a collection of services for reporting on [Danbooru](https://danbooru.donmai.us). It includes the following functionality:
-
-* Search hits
-* Missed search hits
-* Search trends
-* Common searches
-* Exporting data to Google BigQuery
-* User performance reports
-
-The web frontend is a standard Rails application. Reportbooru also runs daemon processes that listen on Amazon SQS for jobs.
+Reportbooru tracks post view counts, post search counts, and missed search counts for
+[Danbooru](https://danbooru.donmai.us). Counts are kept in Redis, and post view counts are
+persisted to DynamoDB.
 
 You can deploy using Capistrano. It's recommended you fork this project and
 modify the following files:
