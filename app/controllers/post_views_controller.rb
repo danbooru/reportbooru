@@ -1,7 +1,6 @@
 class PostViewsController < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_filter :enable_cors
-  rescue_from Concerns::RedisCounter::VerificationError, :with => :render_verification_error
   rescue_from ActiveSupport::MessageVerifier::InvalidSignature, with: :render_verification_error
 
   def create
@@ -18,10 +17,7 @@ class PostViewsController < ApplicationController
     case params[:id]
     when "rank"
       @date = Date.parse(params[:date]).to_s
-      render text: ViewCounter.new.get_rank(@date, HitCounter::LIMIT).to_json
-
-    when /\d+/
-      render text: ViewCounter.new.get_count(params[:id]).to_s
+      render text: ViewCounter.new.get_rank(@date, SearchCounter::LIMIT).to_json
 
     else
       render nothing: true, status: 422

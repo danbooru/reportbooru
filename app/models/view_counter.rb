@@ -22,11 +22,6 @@ class ViewCounter
 
   memoize :redis
 
-  def get_count(post_id)
-    key = "vc-#{post_id}"
-    (redis.get(key) || fetch_post_view_count(post_id)).to_i
-  end
-
   def count!(post_id, session_id)
     full_key = "vc-#{post_id}"
     if unique?(post_id, session_id)

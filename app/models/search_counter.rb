@@ -6,19 +6,6 @@ class SearchCounter
 
   LIMIT = 100
 
-  def self.expunge!
-    redis = Redis.new
-    redis.scan_each(match: "ps-week-*") do |key|
-      redis.del(key)
-    end
-    redis.scan_each(match: "ps-month-*") do |key|
-      redis.del(key)
-    end
-    redis.scan_each(match: "psu-*") do |key|
-      redis.del(key)
-    end
-  end
-
   def get_rank(date, limit)
     key = "ps-day-#{date.strftime('%Y%m%d')}"
     client.zrevrange(key, 0, limit, with_scores: true)

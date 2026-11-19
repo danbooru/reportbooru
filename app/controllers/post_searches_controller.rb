@@ -1,7 +1,6 @@
 class PostSearchesController < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_filter :enable_cors
-  rescue_from Concerns::RedisCounter::VerificationError, :with => :render_verification_error
   rescue_from ActiveSupport::MessageVerifier::InvalidSignature, with: :render_verification_error
 
   def create
@@ -17,7 +16,7 @@ class PostSearchesController < ApplicationController
   def show
     if params[:id] == "rank"
       @date = Date.parse(params[:date])
-      render text: SearchCounter.new.get_rank(@date, HitCounter::LIMIT).to_json
+      render text: SearchCounter.new.get_rank(@date, SearchCounter::LIMIT).to_json
     end
   end
 

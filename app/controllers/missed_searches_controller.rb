@@ -1,7 +1,6 @@
 class MissedSearchesController < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_filter :enable_cors
-  rescue_from Concerns::RedisCounter::VerificationError, :with => :render_verification_error
   rescue_from ActiveSupport::MessageVerifier::InvalidSignature, with: :render_verification_error
 
   def create
